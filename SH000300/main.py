@@ -1,35 +1,41 @@
 
+# -*- coding: utf-8 -*-
+
 import baostock as bs
 import pandas as pd
 import datetime
+import matplotlib.pyplot as plt
 
-code = "sh.000300"
+plt.rcParams['font.sans-serif'] = ['KaiTi']
+plt.rcParams['axes.unicode_minus'] = False
 
-datestart = '2000-01-01'
+stock = "sh.000300"
 
-datetoday = datetime.datetime.today().strftime("%Y-%m-%d")
-
-ShowList ="date,code,open,high,low,close,preclose,volume,amount,adjustflag,turn,tradestatus,pctChg,isST"
-
-def ListToDf(rs):
-
-    data_list = []
-
-    while (rs.error_code == '0') & rs.next():
-        # 获取一条记录，将记录合并在一起
-        data_list.append(rs.get_row_data())
-        result = pd.DataFrame(data_list, columns=rs.fields)
-        print(result)
-
-    return result
+start_date= '2000-01-01'
+end_date= datetime.datetime.today().strftime("%Y-%m-%d")
 
 lg = bs.login()
-print('login respond error_msg:'+lg.error_msg)
 
-rs = bs.query_history_k_data_plus(code,ShowList,start_date=datestart, end_date=datetoday,frequency="d", adjustflag="3")
-result = ListToDf(rs)
-print('query_history_k_data_plus respond error_msg:'+rs.error_msg)
+rs = bs.query_history_k_data(stock, "date,close,pctChg",start_date, end_date, frequency="d", adjustflag="3")
 
-result.to_excel('history_A_stock_k_' + code + '.xls', index=False)
+data_list = []
+while (rs.error_code == '0') & rs.next():
+    data_list.append(rs.get_row_data())
 
-bs.logout()
+fig = plt.figure()
+ax = fig.add_subplot(111)
+ax.set(xlim=[1, len(data_list)], ylim=[1, 100000], title='sh.000300 沪深300 [默认投资] 本金10000元 历史收益', ylabel='元', xlabel='交易日')
+
+money = 10000
+
+x = []
+y = []
+
+for i in range(len(data_list)):
+
+    money += (money*float(data_list[i][2])/100)
+    x.append(i)
+    y.append(money)
+
+ax.plot(x,y)
+plt.show()
