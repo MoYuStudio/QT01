@@ -5,7 +5,10 @@ import baostock as bs
 import pandas as pd
 import datetime
 import matplotlib.pyplot as plt
+# import matplotlib.font_manager as fm
 
+
+# font_zh = fm.FontProperties(fname='pingfangziti\苹方黑体-细-简.ttf')
 plt.rcParams['font.sans-serif'] = ['KaiTi']
 plt.rcParams['axes.unicode_minus'] = False
 
@@ -23,6 +26,7 @@ while (rs.error_code == '0') & rs.next():
     data_list.append(rs.get_row_data())
 
 fig, axes = plt.subplots(nrows=3, ncols=1)
+
 axes[0].set(xlim=[1, len(data_list)], ylim=[1, 150000], title='sh.000300 沪深300 [默认投资] 本金10000元 历史收益', ylabel='元', xlabel='交易日')
 axes[1].set(xlim=[1, len(data_list)], ylim=[1, 150000], title='sh.000300 沪深300 [投资方案1 稳固] 本金10000元 历史收益', ylabel='元', xlabel='交易日')
 axes[2].set(xlim=[1, len(data_list)], ylim=[1, 150000], title='sh.000300 沪深300 [投资方案2 平均] 本金10000元 历史收益', ylabel='元', xlabel='交易日')
